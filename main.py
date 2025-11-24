@@ -99,3 +99,18 @@ class Selection:
             return ""
 
         return "текст"
+
+class Command:
+    """Команды отмены или повтора"""
+
+    def __init__(self, description: str = ""):
+        self.description = description
+        self.timestamp = datetime.now()
+
+    def execute(self) -> None:
+        """Выполнение команды"""
+        pass
+
+    def undo(self) -> None:
+        """Отмена команды"""
+        pass
