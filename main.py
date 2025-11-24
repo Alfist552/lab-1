@@ -9,3 +9,18 @@ class FileFormat(Enum):
     TXT = "txt"
     JSON = "json"
     XML = "xml"
+class TextEditorError(Exception):
+    #Исключение для всех ошибок редактора
+    pass
+
+class DocumentNotFoundError(Exception):
+    #Файл не найден
+    pass
+
+class FileOperationError(Exception):
+    #Ошибка чтения/записи
+    pass
+
+class InvalidPositionError(TextEditorError):
+    #Неправильная позиция курсора(Например, когда курсор пытаются поставить в несуществующее место
+    pass
