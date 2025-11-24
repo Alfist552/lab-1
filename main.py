@@ -38,8 +38,32 @@ class TextStyle:
 
 class ParagraphStyle:
     """Класс для хранения стиля параграфа"""
+
     def __init__(self, alignment: str = "left", line_spacing: float = 1.0, margin_left: int = 0, margin_right: int = 0):
         self.alignment = alignment
         self.line_spacing = line_spacing
         self.margin_left = margin_left
         self.margin_right = margin_right
+
+class Cursor:
+    """Класс для курсора в текстовом редакторе"""
+
+    def __init__(self, line = 0, column = 0):
+        self._line = line
+        self._column = column
+
+    def get_line(self) -> int:
+        """Строка"""
+        return self._line
+
+    def get_column(self) -> int:
+        """Столбец"""
+        return self._column
+
+    def set_position(self, line: int, column: int) -> None:
+        """Для перемещения курсора"""
+        if line < 0 or column < 0:
+            raise InvalidPositionError("Неверное значение позиции")
+        self._line = line
+        self._column = column
+
