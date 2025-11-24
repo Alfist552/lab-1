@@ -67,3 +67,35 @@ class Cursor:
         self._line = line
         self._column = column
 
+class Selection:
+    """Для выделения текста"""
+
+    def __init__(self):
+        self.start_line = 0
+        self.start_column = 0
+        self.end_line = 0
+        self.end_column = 0
+        self.is_active = True
+
+    def set_start(self, line: int, column: int) -> None:
+        """Начальная позиция выделения"""
+        self.start_line = line
+        self.start_column = column
+        self.is_active = True
+
+    def set_end(self, line: int, column: int) -> None:
+        """Конечная позиция выделения"""
+        self.end_line = line
+        self.end_column = column
+        self.is_active = True
+
+    def clear(self) -> None:
+        """Сбросить"""
+        self.is_active = False
+
+    def get_selected_text(self, lines: list[str]) -> str:
+        """Получить выделенный текст"""
+        if not self.is_active:
+            return ""
+
+        return "текст"
