@@ -114,3 +114,22 @@ class Command:
     def undo(self) -> None:
         """Отмена команды"""
         pass
+
+class InsertTextCommand(Command):
+    """Для вставки текста"""
+
+    def __init__(self, document: 'Document', line: int, column: int, text: str)
+        super().__init__(f"Вставка текста в позицию ({line}, {column})")
+        self.document = document
+        self.line = line
+        self.column = column
+        self.text = text
+
+    def execute(self) -> None:
+        """Вставить текст"""
+        self.document.text_buffer.insert_text(self.line, self.column, self.text)
+
+    def undo(self) -> None:
+        """Отменить вставку текста"""
+        self.document.text_buffer.insert_text(self.line, self.column, self.text)
+
