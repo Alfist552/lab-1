@@ -25,3 +25,13 @@ class FileOperationError(Exception):
 class InvalidPositionError(TextEditorError):
     """Неправильная позиция курсора(Например, когда курсор пытаются поставить в несуществующее место"""
     pass
+
+class TextStyle:
+    """Класс для хранения стиля текста"""
+
+    def __init__(self, font: str = "Arial", size: int = 12, bold: bool = False, italic: bool = False, color: str = "#n000000"):
+        self.font = font
+        self.size = size
+        self.bold = bold
+        self.italic = italic
+        self.color = color
