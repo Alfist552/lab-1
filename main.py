@@ -35,3 +35,11 @@ class TextStyle:
         self.bold = bold
         self.italic = italic
         self.color = color
+
+class ParagraphStyle:
+    """Класс для хранения стиля параграфа"""
+    def __init__(self, alignment: str = "left", line_spacing: float = 1.0, margin_left: int = 0, margin_right: int = 0):
+        self.alignment = alignment
+        self.line_spacing = line_spacing
+        self.margin_left = margin_left
+        self.margin_right = margin_right
