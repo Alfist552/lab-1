@@ -36,6 +36,27 @@ class TextStyle:
         self.italic = italic
         self.color = color
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Преобразовать стиль в словарь (JSON)"""
+        return{
+            "font": self.font,
+            "size": self.size,
+            "bold": self.bold,
+            "italic": self.italic,
+            "color": self.color
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "TextStyle":
+        """Создать стиль из словаря"""
+        return cls(
+            font = data.get("font", "Arial"),
+            size = data.get("size", 12),
+            bold = data.get("bold", False),
+            italic = data.get("italic", False),
+            color = data.get("color", "#000000")
+        )
+
 class ParagraphStyle:
     """Класс для хранения стиля параграфа"""
 
@@ -215,3 +236,5 @@ class TextBuffer:
     def set_text(self, text: str) -> None:
         """Установить текст из строки"""
         self.lines = text.split("\n") if text else [""]
+
+
