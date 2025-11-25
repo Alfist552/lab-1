@@ -452,6 +452,23 @@ def save_to_xml(document: Document, file_path: str) -> None:
     except Exception as e:
         raise FileOperationError(f"Не удалось сохранить в XML: {str(e)}")
 
+def load_from_xml(file_path: str) -> Document:
+    """Загрузка файла XML"""
+    try:
+        if not os.path.exists(file_path):
+            raise DocumentNotFoundError(f"Файл {file_path} не найден")
+
+        tree = ET.parse(file_path)
+        root = tree.getroot()
+
+        return Document.from_xml(root)
+
+    except DocumentNotFoundError:
+        raise
+    except Exception as e:
+        raise FileOperationError(f"Ошибка загрузки XML: {str(e)}")
+
+
 
 if __name__ == "__main__":
     try:
@@ -484,6 +501,20 @@ if __name__ == "__main__":
         print(f"Курсор: строка {loaded_doc.cursor.get_line()}, столбец {loaded_doc.cursor.get_column()}")
         print(f"Время создания: {loaded_doc.created_at}")
         print(f" Содержимое: {loaded_doc.text_buffer.get_text()}")
+
+        """Сохранение в XML"""
+        save_to_xml(doc, "documentx.xml")
+        print("Документ сохранен в XML")
+
+        """Загрузка из XML"""
+        xml_doc = load_from_xml("documentx.xml")
+        print(f" Документ загружен из XML файла")
+        print(f" Заголовок: {xml_doc.title}")
+        print(f"Количество строк: {len(xml_doc.text_buffer.lines)}")
+        print(f"Курсор: строка {xml_doc.cursor.get_line()}, столбец {xml_doc.cursor.get_column()}")
+        print(f"Время создания: {xml_doc.created_at}")
+        print(f" Содержимое: {xml_doc.text_buffer.get_text()}")
+
     except (FileOperationError, DocumentNotFoundError) as e:
         print(f"Ошибка: {e}")
 
