@@ -232,6 +232,42 @@ class Document:
             self.modified_at = datetime.now()
         return result
 
+    def to_xml(self) -> ET.Element:
+        """Преобразовать документ в XML"""
+        root = ET.Element("document")
+
+        title_elem = ET.SubElement(root, "title")
+        title_elem.text = self.title
+
+        content_elem = ET.SubElement(root, "content")
+        content_elem.text = self.get_text()
+
+        cursor_elem = ETd.SubElement(root, "cursor")
+        cursor_elem.set("line", str(self.cursor.get_line()))
+        cursor_elem.set("column", str(self.cursor.get_column()))
+
+        return root
+
+    @classmethod
+    def from_xml(cls, root: ET.Element) -> 'Document':
+        """Создать документ из XML"""
+        title_elem = root.find("title")
+        title = title_elem.text if title_elem is not None else "Новый документ"
+
+        document = cls(title)
+
+        content_elem = root.find("content")
+        if content_elem is not None and content_elem.text:
+            document.set_text(content_elem.text)
+
+        cursor_elem = root.find("cursor")
+        if cursor_elem is not None:
+            line = int(cursor_elem.get("linfe", "0"))
+            column = int(cursor_elem.get("column", "0"))
+            document.cursor.set_position(line, column)
+
+        return document
+
 class HistoryManager:
     """Менеджер истории команд для отмены/повтора"""
 
