@@ -337,62 +337,58 @@ class TextBuffer:
 
 """Функции для работы с JSON файлами"""
 
+
 def save_to_json(document: 'Document', file_path: str) -> None:
-
-    """
-    Сохранение документа в JSON файл
-
-    Путь к файлу - file.path
-
-    Документ для сохранения - document
-
-    Если не удастся сохранить файл --> FileOperationError
-
-    """
-
     try:
-        """ Структура данных для JSON"""
+        content = document.text_buffer.get_text()
+        words = content.split()
+
         data = {
-            "title": document.title,
-            "content": document.text_buffer.get_text(),
-            "cursor": document.cursor.to_dict(),
-            "created_at": document.created_at.isoformat(),
-            "modified_at": document.modified_at.isoformat()
+            "document": {
+                "title": document.title,
+                "content": content,
+                "cursor": {
+                    **document.cursor.to_dict(),
+                    "position_name": f"Line {document.cursor.get_line()}, Column {document.cursor.get_column()}"
+                }
+            },
+
+            "metadata": {
+                "lines_count": len(document.text_buffer.lines),
+                "version": "1.0",
+                "characters_count": len(content),
+                "words_count": len(words),
+                "characters_without_spaces": len(content.replace(" ", "")),
+                 "paragraphs_count": content.count('\n\n') + 1,
+                 "average_word_length": sum(len(word) for word in words) / len(words) if words else 0
+            }
         }
 
-        with open(file_path, 'w', encoding = 'utf-8') as file:
-            json.dump(data, file, indent = 2, ensure_ascii = False)
+        with open(file_path, 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent=2, ensure_ascii=False)
 
     except Exception as e:
         raise FileOperationError(f"Не удалось сохранить в JSON: {str(e)}")
 
+    except Exception as e:
+        raise FileOperationError(f"Не удалось сохранить в JSON: {str(e)}")
+
+
 def load_from_json(file_path: str) -> 'Document':
-
-    """
-
-    Загрузка документа из JSON файла
-
-    Путь к JSON файлу - file.path
-
-    Если не удалось загрузить файл - FileOperationError
-
-    Если файл не найден - DocumentNotFoundError
-
-    """
     try:
         if not os.path.exists(file_path):
             raise DocumentNotFoundError(f"Файл {file_path} не найден")
 
-        with open(file_path, 'r', encoding = 'utf-8') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
-        document = Document(title = data.get("title" , "Новый документ"))
-        document.text_buffer.set_text(data.get("content", ""))
+        document = Document(title=data.get("title", "Новый документ"))
 
+        content = data.get("content", "")
+        document.text_buffer.set_text(content)
 
         cursor_data = data.get("cursor", {})
         document.cursor = Cursor.from_dict(cursor_data)
-
         return document
 
     except DocumentNotFoundError:
@@ -492,4 +488,3 @@ if __name__ == "__main__":
 
     except (FileOperationError, DocumentNotFoundError) as e:
         print(f"Ошибка: {e}")
-
