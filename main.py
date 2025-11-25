@@ -193,6 +193,13 @@ class Document:
             self.modified_at = datetime.now()
         return result
 
+    def replace_text(self, old_text : str, new_text : str) -> None:
+        """Замена текста"""
+        current_text = self.get_text()
+        updated_text = current_text.replace(old_text, new_text)
+        self.set_text(updated_text)
+        self.modified_at = datetime.now()
+
     def to_xml(self) -> ET.Element:
         """Преобразовать документ в XML"""
         root = ET.Element("document")
