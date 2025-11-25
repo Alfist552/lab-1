@@ -106,6 +106,20 @@ class Cursor:
         self._line = line
         self._column = column
 
+    def to_dict(self) -> Dict[str, int]:
+        """Преобразование позиции курсора в словарь для JSON"""
+        return{
+            "line": self._line,
+            "column": self._column
+        }
+    @classmethod
+    def from_dict(cls, data: Dict[str, int]) -> 'Cursor':
+        """Создать курсор из словаря"""
+        return cls(
+            line = data.get("line", 0),
+            column = data.get("column", 0)
+        )
+
 class Selection:
     """Для выделения текста"""
 
