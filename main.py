@@ -133,3 +133,54 @@ class InsertTextCommand(Command):
         """Отменить вставку текста"""
         self.document.text_buffer.insert_text(self.line, self.column, self.text)
 
+
+class HistoryManager:
+    """Менеджер истории команд для отмены/повтора"""
+
+    def __int__(self, max_history_size: int = 100):
+        self.undo_stack = []
+        self.redo_stack = []
+        self.max_history_size = max_history_size
+
+    def execute_command(self, command: Command) -> None:
+        """Добавить в журнал действий выполненную команду"""
+        command.execute()
+        self.undo_stack.append(command)
+        self.redo_stack.clear()
+
+    def undo(self) -> bool:
+        """отмена"""
+        if not self.undo_stack:
+            return False
+        command = self.undo_stack.pop()
+        command.undo()
+        self.redo_stack.append(command)
+        return True
+
+    def redo(self) -> bool:
+        """Повтор отмененной команды"""
+        if not self.redo_stack:
+            return False
+
+        command = self.redo_stack.pop()
+        command.execute()
+        self.redo_stack.append(command)
+        return True
+
+    def can_undo(self) -> bool:
+        """Можно ли отменить действие"""
+        return len(self.undo_stack) > 0
+
+    def can_redo(self) -> bool:
+        """Можно ли повторить действие"""
+        return len(self.redo_stack) > 0
+
+    @staticmethod
+    def get_max_history_size() -> int:
+        """Максимальный размер истории"""
+        return 100
+
+    @staticmethod
+    def is_valid_command(command: Command) -> bool:
+        """Действительна ли команда"""
+        return hasattr(command, "execute") and hassatr(command, 'undo')
