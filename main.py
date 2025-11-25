@@ -396,19 +396,33 @@ def load_from_json(file_path: str) -> 'Document':
 
 if __name__ == "__main__":
     try:
-        doc = Document("Текстовый документ")
-        doc.text_buffer.set_text("Test #1. Python")
+        doc = Document("Лабораторная работа №1")
+        doc.text_buffer.set_text("""В данной лабораторной работе необходимо реализовать Стиль ООП.
+        
+        Обработать исключительные стуации а также разобраться с форматами JSON и XML
+        
+        Выполняется вариант 16:Напишите классы для предметной области текстового редактора. 
+        
+        Были реализованы основные классы, реализуемые для текстового редактора: удаление, повтор действий,
+        
+        вставка, удаление, копирование, вырезание, а также показаны шрифт и параграф
+        
+        Курсор можно перемещать по тексту и выделять различные участки для редактирования
+        
+        Конец образца.""")
+
         doc.cursor.set_position(1, 5)
 
         """Сохранение в JSON"""
-        save_to_json(doc, "test.document.json")
+        save_to_json(doc, "document1.json")
         print("Доумент сохранен в JSON")
 
         """Загрузка в JSON"""
-        loaded_doc = load_from_json("test.document.json")
+        loaded_doc = load_from_json("document1.json")
         print(f" Документ загружен: {loaded_doc.title}")
         print(f" Содержимое: {loaded_doc.text_buffer.get_text()}")
         print(f"Курсор: строка {loaded_doc.cursor.get_line()}, столбец {loaded_doc.cursor.get_column()}")
 
     except (FileOperationError, DocumentNotFoundError) as e:
         print(f"Ошибка: {e}")
+
