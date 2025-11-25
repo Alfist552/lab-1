@@ -448,7 +448,12 @@ def save_to_xml(document: Document, file_path: str) -> None:
         raise FileOperationError(f"Не удалось сохранить в XML: {str(e)}")
 
 def load_from_xml(file_path: str) -> Document:
-    """Загрузка файла XML"""
+    """
+    Загрузка файла XML
+
+    Аналогично загрузке файлов JSON
+
+    """
     try:
         if not os.path.exists(file_path):
             raise DocumentNotFoundError(f"Файл {file_path} не найден")
