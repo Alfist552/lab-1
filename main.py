@@ -66,6 +66,24 @@ class ParagraphStyle:
         self.margin_left = margin_left
         self.margin_right = margin_right
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Преобразование в стиль для JSON"""
+        return{
+            "alignment": self.alignment,
+            "line_spacing": self.line_spacing,
+            "margin_left": self.margin_left,
+            "margin_right": self.margin_right
+        }
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "ParagraphStyle":
+        """Создание стиля параграфа из словаря"""
+        return cls(
+            alignment = data.get("alignment", "left"),
+            line_spacing = data.get("line_spacing", 1.0),
+            margin_left = data.get("margin_left", 0),
+            margin_right= data.get("margin_right", 0)
+        )
+
 class Cursor:
     """Класс для курсора в текстовом редакторе"""
 
