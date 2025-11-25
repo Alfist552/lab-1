@@ -242,7 +242,7 @@ class Document:
         content_elem = ET.SubElement(root, "content")
         content_elem.text = self.get_text()
 
-        cursor_elem = ETd.SubElement(root, "cursor")
+        cursor_elem = ET.SubElement(root, "cursor")
         cursor_elem.set("line", str(self.cursor.get_line()))
         cursor_elem.set("column", str(self.cursor.get_column()))
 
@@ -262,7 +262,7 @@ class Document:
 
         cursor_elem = root.find("cursor")
         if cursor_elem is not None:
-            line = int(cursor_elem.get("linfe", "0"))
+            line = int(cursor_elem.get("line", "0"))
             column = int(cursor_elem.get("column", "0"))
             document.cursor.set_position(line, column)
 
@@ -429,6 +429,29 @@ def load_from_json(file_path: str) -> 'Document':
         raise
     except Exception as e:
         raise FileOperationError(f"Ошибка загрузки JSON: {str(e)}")
+
+def save_to_xml(document: Document, file_path: str) -> None:
+    """
+
+    Сохранение в XML формат
+
+    Путь к файлу - file.path
+
+    Документ для сохранения - document
+
+    Если не удалось сохранить - FileOperationError
+
+    """
+
+    try:
+        root = document.to_xml()
+        tree = ET.ElementTree(root)
+
+        tree.write(file_path, encoding = 'utf-8', xml_declaration = True)
+
+    except Exception as e:
+        raise FileOperationError(f"Не удалось сохранить в XML: {str(e)}")
+
 
 if __name__ == "__main__":
     try:
