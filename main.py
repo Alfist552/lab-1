@@ -269,4 +269,16 @@ class TextBuffer:
         """Установить текст из строки"""
         self.lines = text.split("\n") if text else [""]
 
-
+    def to_dict(self) -> Dict[str, Any]:
+        """Преобразование текста в словарь для JSON"""
+        return {
+            "content": self.get_text(),
+            "lines_count": len(self.lines)
+        }
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'TextBuffer':
+        """Создание текстового буфера из словаря"""
+        buffer = cls()
+        content = data.get("content", "")
+        buffer.set_text(content)
+        return buffer
