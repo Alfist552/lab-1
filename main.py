@@ -278,6 +278,8 @@ class HistoryManager:
 
     def execute_command(self, command: Command) -> None:
         """Добавить в журнал действий выполненную команду"""
+        if not self.is_valid_command(command):
+            raise TextEditorError("Неверная команда")
         command.execute()
         self.undo_stack.append(command)
         self.redo_stack.clear()
