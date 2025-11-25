@@ -503,11 +503,11 @@ if __name__ == "__main__":
         print(f" Содержимое: {loaded_doc.text_buffer.get_text()}")
 
         """Сохранение в XML"""
-        save_to_xml(doc, "documentx.xml")
+        save_to_xml(doc, "document1.xml")
         print("Документ сохранен в XML")
 
         """Загрузка из XML"""
-        xml_doc = load_from_xml("documentx.xml")
+        xml_doc = load_from_xml("document1.xml")
         print(f" Документ загружен из XML файла")
         print(f" Заголовок: {xml_doc.title}")
         print(f"Количество строк: {len(xml_doc.text_buffer.lines)}")
