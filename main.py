@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 from typing import List, Dict, Optional, Any, Union
 from datetime import datetime
 from enum import Enum
+import os
 
 class FileFormat(Enum):
     """ Форматы файлов которые поддерживает редактор """
@@ -171,7 +172,7 @@ class Command:
 class InsertTextCommand(Command):
     """Для вставки текста"""
 
-    def __init__(self, document: 'Document', line: int, column: int, text: str)
+    def __init__(self, document: 'Document', line: int, column: int, text: str):
         super().__init__(f"Вставка текста в позицию ({line}, {column})")
         self.document = document
         self.line = line
@@ -187,10 +188,54 @@ class InsertTextCommand(Command):
         self.document.text_buffer.insert_text(self.line, self.column, self.text)
 
 
+class Document:
+    """Основной класс документа"""
+
+    def __init__(self, title: str = "Новый документ"):
+        self.title = title
+        self.text_buffer = TextBuffer()
+        self.cursor = Cursor()
+        self.selection = Selection()
+        self.history = HistoryManager()
+        self.created_at = datetime.now()
+        self.modified_at = datetime.now()
+
+    def insert_text(self, text: str) -> None:
+        """Вставить текст на позицию курсора"""
+        line = self.cursor.get_line()
+        column = self.cursor.get_column()
+        command = InsertTextCommand(self, line, column, text)
+        self.history.execute_command(command)
+        self.modified_at = datetime.now()
+
+    def get_text(self) -> str:
+        """Получить весь текст документа"""
+        return self.text_buffer.get_text()
+
+    def set_text(self, text: str) -> None:
+        """Установить текст документа"""
+        self.text_buffer.set_text(text)
+        self.cursor.set_position(0, 0)
+        self.modified_at = datetime.now()
+
+    def undo(self) -> bool:
+        """Отменить последнее действие"""
+        result = self.history.undo()
+        if result:
+            self.modified_at = datetime.now()
+        return result
+
+    def redo(self) -> bool:
+        """Повторить последнее отмененное действие"""
+        result = self.history.redo()
+        if result:
+            self.modified_at = datetime.now()
+        return result
+
 class HistoryManager:
     """Менеджер истории команд для отмены/повтора"""
 
-    def __int__(self, max_history_size: int = 100):
+    def __init__(self, max_history_size: int = 100):
         self.undo_stack = []
         self.redo_stack = []
         self.max_history_size = max_history_size
@@ -282,3 +327,88 @@ class TextBuffer:
         content = data.get("content", "")
         buffer.set_text(content)
         return buffer
+
+
+"""Функции для работы с JSON файлами"""
+
+def save_to_json(document: 'Document', file_path: str) -> None:
+
+    """
+    Сохранение документа в JSON файл
+
+    Путь к файлу - file.path
+
+    Документ для сохранения - document
+
+    Если не удастся сохранить файл --> FileOperationError
+
+    """
+
+    try:
+        """ Структура данных для JSON"""
+        data = {
+            "title": document.title,
+            "content": document.text_buffer.get_text(),
+            "cursor": document.cursor.to_dict(),
+            "created_at": document.created_at.isoformat(),
+            "modified_at": document.modified_at.isoformat()
+        }
+
+        with open(file_path, 'w', encoding = 'utf-8') as file:
+            json.dump(data, file, indent = 2, ensure_ascii = False)
+
+    except Exception as e:
+        raise FileOperationError(f"Не удалось сохранить в JSON: {str(e)}")
+
+def load_from_json(file_path: str) -> 'Document':
+
+    """
+
+    Загрузка документа из JSON файла
+
+    Путь к JSON файлу - file.path
+
+    Если не удалось загрузить файл - FileOperationError
+
+    Если файл не найден - DocumentNotFoundError
+
+    """
+    try:
+        if not os.path.exists(file_path):
+            raise DocumentNotFoundError(f"Файл {file_path} не найден")
+
+        with open(file_path, 'r', encoding = 'utf-8') as file:
+            data = json.load(file)
+
+        document = Document(title = data.get("title, Новый документ"))
+        document.text_buffer.set_text(data.get("content", ""))
+
+
+        cursor_data = data.get("cursor", {})
+        document.cursor = Cursor.from_dict(cursor_data)
+
+        return document
+
+    except DocumentNotFoundError:
+        raise
+    except Exception as e:
+        raise FileOperationError(f"Ошибка загрузки JSON: {str(e)}")
+
+if __name__ == "__main__":
+    try:
+        doc = Document("Текстовый документ")
+        doc.text_buffer.set_text("Test #1. Python")
+        doc.cursor.set_position(1, 5)
+
+        """Сохранение в JSON"""
+        save_to_json(doc, "test.document.json")
+        print("Доумент сохранен в JSON")
+
+        """Загрузка в JSON"""
+        loaded_doc = load_from_json("test.document.json")
+        print(f" Документ загружен: {loaded_doc.title}")
+        print(f" Содержимое: {loaded_doc.text_buffer.get_text()}")
+        print(f"Курсор: строка {loaded_doc.cursor.get_line()}, столбец {loaded_doc.cursor.get_column()}")
+
+    except (FileOperationError, DocumentNotFoundError) as e:
+        print(f"Ошибка: {e}")
