@@ -30,7 +30,7 @@ class InvalidPositionError(TextEditorError):
 class TextStyle:
     """Класс для хранения стиля текста"""
 
-    def __init__(self, font: str = "Arial", size: int = 12, bold: bool = False, italic: bool = False, color: str = "#n000000"):
+    def __init__(self, font: str = "Arial", size: int = 12, bold: bool = False, italic: bool = False, color: str = "#000000"):
         self.font = font
         self.size = size
         self.bold = bold
@@ -129,7 +129,7 @@ class Selection:
         self.start_column = 0
         self.end_line = 0
         self.end_column = 0
-        self.is_active = True
+        self.is_active = False
 
     def set_start(self, line: int, column: int) -> None:
         """Начальная позиция выделения"""
@@ -185,7 +185,7 @@ class InsertTextCommand(Command):
 
     def undo(self) -> None:
         """Отменить вставку текста"""
-        self.document.text_buffer.insert_text(self.line, self.column, self.text)
+        self.document.text_buffer.delete_text(self.line, self.column, self.text)
 
 
 class Document:
@@ -380,7 +380,7 @@ def load_from_json(file_path: str) -> 'Document':
         with open(file_path, 'r', encoding = 'utf-8') as file:
             data = json.load(file)
 
-        document = Document(title = data.get("title, Новый документ"))
+        document = Document(title = data.get("title" , "Новый документ"))
         document.text_buffer.set_text(data.get("content", ""))
 
 
