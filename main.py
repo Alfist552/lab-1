@@ -183,4 +183,35 @@ class HistoryManager:
     @staticmethod
     def is_valid_command(command: Command) -> bool:
         """Действительна ли команда"""
-        return hasattr(command, "execute") and hassatr(command, 'undo')
+        return hasattr(command, "execute") and hasattr(command, 'undo')
+
+class TextBuffer:
+    """Класс для управления тектом"""
+
+    def __init__(self):
+        self.lines = [""]
+
+    def insert_text(self,line: int, column: int, text: str) -> None:
+        """Вставка текста"""
+        if line >= len(self.lines):
+            raise InvalidPositionError(f"Строка {line} не существует")
+
+        current_line = self.lines[line]
+        new_line = current_line[:column] + text + current_line[column:]
+        self.lines[line] = new_line
+
+    def delete_text(self,line: int, start_col: int, end_col: int) -> None:
+        """Удаление текста"""
+        if line >= len(self.lines):
+            raise InvalidPositionError(f"Строка {line} не существует")
+
+        current_line = self.lines[line]
+        self.lines[line] = current_line[:start_col] +  current_line[end_col:]
+
+    def get_text(self) -> str:
+        """Весь текст как 1 строка"""
+        return "\n".join(self.lines)
+
+    def set_text(self, text: str) -> None:
+        """Установить текст из строки"""
+        self.lines = text.split("\n") if text else [""]
