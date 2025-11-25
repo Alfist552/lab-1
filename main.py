@@ -367,14 +367,13 @@ def save_to_json(document: 'Document', file_path: str) -> None:
         with open(file_path, 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=2, ensure_ascii=False)
 
-    except Exception as e:
-        raise FileOperationError(f"Не удалось сохранить в JSON: {str(e)}")
 
     except Exception as e:
         raise FileOperationError(f"Не удалось сохранить в JSON: {str(e)}")
 
 
 def load_from_json(file_path: str) -> 'Document':
+    """Загрузка JSON формата"""
     try:
         if not os.path.exists(file_path):
             raise DocumentNotFoundError(f"Файл {file_path} не найден")
@@ -382,12 +381,15 @@ def load_from_json(file_path: str) -> 'Document':
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
-        document = Document(title=data.get("title", "Новый документ"))
+        document_data = data.get("document",{})
+        title = document_data.get("title", "Новый документ")
+        content = document_data.get("content", "")
 
-        content = data.get("content", "")
+        document = Document(title=title)
+
         document.text_buffer.set_text(content)
 
-        cursor_data = data.get("cursor", {})
+        cursor_data = document_data.get("cursor", {})
         document.cursor = Cursor.from_dict(cursor_data)
         return document
 
