@@ -157,6 +157,7 @@ class Document:
         self.cursor = Cursor()
         self.selection = Selection()
         self.history = HistoryManager()
+        self.style = Style()
         self.created_at = datetime.now()
         self.modified_at = datetime.now()
 
