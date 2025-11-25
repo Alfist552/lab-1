@@ -20,63 +20,30 @@ class InvalidPositionError(TextEditorError):
     """Неправильная позиция курсора(Например, когда курсор пытаются поставить в несуществующее место"""
     pass
 
-class TextStyle:
-    """Класс для хранения стиля текста"""
 
-    def __init__(self, font: str = "Arial", size: int = 12, bold: bool = False, italic: bool = False, color: str = "#000000"):
+class Style:
+    """Универсальный класс для стилей текста и параграфов"""
+    def __init__(self,
+                 font: str = "Arial",
+                 size: int = 12,
+                 bold: bool = False,
+                 italic: bool = False,
+                 color: str = "#000000",
+                 alignment: str = "left",
+                 line_spacing: float = 1.0,
+                 margins: tuple = (0, 0)):
+
         self.font = font
         self.size = size
         self.bold = bold
         self.italic = italic
         self.color = color
 
-    def to_dict(self) -> Dict[str, Any]:
-        """Преобразовать стиль в словарь (JSON)"""
-        return{
-            "font": self.font,
-            "size": self.size,
-            "bold": self.bold,
-            "italic": self.italic,
-            "color": self.color
-        }
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "TextStyle":
-        """Создать стиль из словаря"""
-        return cls(
-            font = data.get("font", "Arial"),
-            size = data.get("size", 12),
-            bold = data.get("bold", False),
-            italic = data.get("italic", False),
-            color = data.get("color", "#000000")
-        )
-
-class ParagraphStyle:
-    """Класс для хранения стиля параграфа"""
-
-    def __init__(self, alignment: str = "left", line_spacing: float = 1.0, margin_left: int = 0, margin_right: int = 0):
+        # Стили параграфа
         self.alignment = alignment
         self.line_spacing = line_spacing
-        self.margin_left = margin_left
-        self.margin_right = margin_right
+        self.margin_left, self.margin_right = margins
 
-    def to_dict(self) -> Dict[str, Any]:
-        """Преобразование в стиль для JSON"""
-        return{
-            "alignment": self.alignment,
-            "line_spacing": self.line_spacing,
-            "margin_left": self.margin_left,
-            "margin_right": self.margin_right
-        }
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ParagraphStyle":
-        """Создание стиля параграфа из словаря"""
-        return cls(
-            alignment = data.get("alignment", "left"),
-            line_spacing = data.get("line_spacing", 1.0),
-            margin_left = data.get("margin_left", 0),
-            margin_right= data.get("margin_right", 0)
-        )
 
 class Cursor:
     """Класс для курсора в текстовом редакторе"""
