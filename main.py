@@ -2,14 +2,7 @@ import json
 import xml.etree.ElementTree as ET
 from typing import List, Dict, Optional, Any, Union
 from datetime import datetime
-from enum import Enum
 import os
-
-class FileFormat(Enum):
-    """ Форматы файлов которые поддерживает редактор """
-    TXT = "txt"
-    JSON = "json"
-    XML = "xml"
 
 class TextEditorError(Exception):
     """Исключение для всех ошибок редактора"""
