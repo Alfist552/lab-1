@@ -268,7 +268,7 @@ class HistoryManager:
 
         command = self.redo_stack.pop()
         command.execute()
-        self.redo_stack.append(command)
+        self.undo_stack.append(command)
         return True
 
     def can_undo(self) -> bool:
@@ -399,18 +399,7 @@ def load_from_json(file_path: str) -> 'Document':
         raise FileOperationError(f"Ошибка загрузки JSON: {str(e)}")
 
 def save_to_xml(document: Document, file_path: str) -> None:
-    """
-
-    Сохранение в XML формат
-
-    Путь к файлу - file.path
-
-    Документ для сохранения - document
-
-    Если не удалось сохранить - FileOperationError
-
-    """
-
+    """Сохранение в XML формат"""
     try:
         root = document.to_xml()
         tree = ET.ElementTree(root)
@@ -421,12 +410,7 @@ def save_to_xml(document: Document, file_path: str) -> None:
         raise FileOperationError(f"Не удалось сохранить в XML: {str(e)}")
 
 def load_from_xml(file_path: str) -> Document:
-    """
-    Загрузка файла XML
-
-    Аналогично загрузке файлов JSON
-
-    """
+    """Загрузка файла XML"""
     try:
         if not os.path.exists(file_path):
             raise DocumentNotFoundError(f"Файл {file_path} не найден")
@@ -440,8 +424,6 @@ def load_from_xml(file_path: str) -> Document:
         raise
     except Exception as e:
         raise FileOperationError(f"Ошибка загрузки XML: {str(e)}")
-
-
 
 if __name__ == "__main__":
     try:
