@@ -1,8 +1,9 @@
 import json
+import os
+from datetime import datetime
 import xml.etree.ElementTree as ET
 from typing import List, Dict, Optional, Any, Union
-from datetime import datetime
-import os
+
 
 class TextEditorError(Exception):
     """Исключение для всех ошибок редактора"""
@@ -304,11 +305,10 @@ class TextBuffer:
         new_line = current_line[:column] + text + current_line[column:]
         self.lines[line] = new_line
 
-    def delete_text(self,line: int, start_col: int, end_col: int) -> None:
+    def delete_text(self, line: int, start_col: int, end_col: int) -> None:
         """Удаление текста"""
         if line >= len(self.lines):
             raise InvalidPositionError(f"Строка {line} не существует")
-
         current_line = self.lines[line]
         self.lines[line] = current_line[:start_col] +  current_line[end_col:]
 
